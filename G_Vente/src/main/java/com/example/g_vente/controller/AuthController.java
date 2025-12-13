@@ -2,6 +2,7 @@ package com.example.g_vente.controller;
 
 import com.example.g_vente.security.JwtUtil;
 import com.example.g_vente.service.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,20 +28,30 @@ public class AuthController {
     @PostMapping
     public String authenticate(@RequestParam String login,
                                @RequestParam String password,
-                               HttpSession session,
+                               HttpServletRequest request,
                                Model model) {
 
-        if (!usersService.verifyUser(login, password)) {
-            model.addAttribute("error", "Login ou mot de passe incorrect");
-            return "login";
+        if (usersService.verifyUser(login, password)) {
+            String token = jwtUtil.generateToken(login);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("JWT", token);
+            session.setAttribute("USER", login);
+
+            // No token in model anymore
+            model.addAttribute("user", login);
+
+            return "accueil";
         }
 
-        String token = jwtUtil.generateToken(login);
+        model.addAttribute("error", "Login ou mot de passe incorrect");
+        return "login";
+    }
 
-        // Option A: keep token server-side
-        session.setAttribute("user", login);
-        session.setAttribute("token", token);
-
-        return "redirect:/accueil";
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) session.invalidate();
+        return "redirect:/auth";
     }
 }

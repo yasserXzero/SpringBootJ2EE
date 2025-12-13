@@ -1,14 +1,17 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-
 <h2>Bienvenue ${user}</h2>
 
-<a href="/produits?token=${token}">
+<a href="/produits">
     <button>Voir les produits</button>
 </a>
 
 <br/><br/>
 
-<a href="/commande?token=${token}">
+<a href="/commande">
     <button>Créer une commande</button>
+</a>
+
+<br/><br/>
+
+<a href="/auth/logout">
+    <button>Logout</button>
 </a>

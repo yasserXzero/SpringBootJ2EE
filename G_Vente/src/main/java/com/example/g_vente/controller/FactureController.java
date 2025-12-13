@@ -18,6 +18,7 @@ public class FactureController {
 
     @GetMapping("/facture")
     public ResponseEntity<byte[]> facture(@RequestParam Long id) {
+
         var cmd = commandeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Commande not found"));
 
@@ -25,8 +26,8 @@ public class FactureController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.inline().filename("facture_" + id + ".pdf").build());
-        headers.setCacheControl(CacheControl.noStore());
+        headers.setContentDisposition(ContentDisposition.inline()
+                .filename("facture_" + id + ".pdf").build());
 
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }

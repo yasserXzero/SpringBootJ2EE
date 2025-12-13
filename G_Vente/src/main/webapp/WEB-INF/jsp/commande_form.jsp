@@ -7,7 +7,7 @@
     <p style="color:red">${error}</p>
 </c:if>
 
-<form method="post" action="/commande?token=${token}">
+<form method="post" action="/commande">
     <label>Code Commande:</label>
     <input type="number" name="codeCmd" required /><br/><br/>
 
