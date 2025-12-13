@@ -16,4 +16,8 @@ public class AccueilController {
         model.addAttribute("user", user);
         return "accueil";
     }
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/accueil";
+    }
 }
