@@ -1,71 +1,108 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>Commande validée</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .box { border: 1px solid #ddd; padding: 16px; max-width: 520px; }
-        .hidden { display:none; }
-        button { padding: 10px 14px; cursor:pointer; }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Commande validée - G_Vente</title>
+    <link rel="stylesheet" href="<c:url value='/css/app.css'/>">
 </head>
 <body>
 
-<div class="box">
-    <h3>Commande ajoutée avec succès</h3>
-    <p>Nous tentons d’ouvrir la facture dans un nouvel onglet…</p>
+<header class="topbar">
+    <div class="topbar__inner">
+        <a class="brand" href="<c:url value='/accueil'/>">
+            <div class="brand__logo">GV</div>
+            <div class="brand__text">
+                <div class="brand__name">G_Vente</div>
+                <div class="brand__sub">Commande</div>
+            </div>
+        </a>
 
-    <div id="blocked" class="hidden">
-        <p style="color:#b00;">
-            Votre navigateur a bloqué l’ouverture automatique du nouvel onglet.
+        <div class="actions">
+            <a class="btn" href="<c:url value='/accueil'/>">Accueil</a>
+            <a class="btn btn--danger" href="<c:url value='/auth/logout'/>">Déconnexion</a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h1 class="page-title">Commande ajoutée avec succès</h1>
+    <p class="page-subtitle">Nous allons ouvrir la facture et vous rediriger vers l’accueil.</p>
+
+    <div class="card" id="successCard">
+
+        <div class="alert alert--success" id="autoOpenMsg">
+            <strong>Info:</strong> Tentative d’ouverture automatique de la facture…
+        </div>
+
+        <div class="alert alert--danger" id="blockedMsg" style="display:none;">
+            <strong>Action requise:</strong> Votre navigateur a bloqué l’ouverture automatique.
+            Cliquez sur “Ouvrir la facture”.
+        </div>
+
+        <div class="actions" style="justify-content:flex-start;">
+            <a class="btn btn--primary" id="openFactureBtn" href="#" target="_blank" rel="noopener">
+                Ouvrir la facture
+            </a>
+
+            <a class="btn" id="backHomeBtn" href="<c:url value='/accueil'/>">
+                Retour à l’accueil
+            </a>
+        </div>
+
+        <p class="small" style="margin-top:10px;">
+            Facture ID: <strong>${id}</strong>
         </p>
-        <p>
-            Cliquez ici pour ouvrir la facture :
-            <a id="factureLink" href="#" target="_blank" rel="noopener">Ouvrir la facture</a>
-        </p>
-        <p>
-            Ensuite vous pouvez revenir à l’accueil :
-            <a href="<c:url value='/accueil'/>">Retour à l'accueil</a>
-        </p>
+
     </div>
 
-    <div id="ok" class="hidden">
-        <p>Facture ouverte. Redirection vers l’accueil…</p>
-    </div>
+    <p class="small" style="margin-top:18px;">© <span id="year"></span> G_Vente</p>
 </div>
+
+<script defer src="<c:url value='/js/app.js'/>"></script>
 
 <script>
     (function () {
         const factureUrl = "<c:url value='/facture'/>?id=${id}";
 
-        // Put the URL into the fallback link
-        const link = document.getElementById("factureLink");
-        link.href = factureUrl;
+        const openBtn = document.getElementById("openFactureBtn");
+        const blockedMsg = document.getElementById("blockedMsg");
+        const autoOpenMsg = document.getElementById("autoOpenMsg");
 
-        // Attempt to open new tab
+        openBtn.href = factureUrl;
+
+        // Try opening automatically
         const w = window.open(factureUrl, "_blank");
 
-
         if (!w) {
-            document.getElementById("blocked").classList.remove("hidden");
+            // blocked => show warning, let user click
+            blockedMsg.style.display = "block";
+            autoOpenMsg.style.display = "none";
             return;
         }
 
-        document.getElementById("ok").classList.remove("hidden");
+        // Opened => redirect after a short delay
         setTimeout(function () {
             window.location.href = "<c:url value='/accueil'/>";
-        }, 600);
+        }, 700);
+
     })();
 </script>
 
 <noscript>
-    <p>
-        JavaScript est désactivé.
-        <a href="<c:url value='/facture'/>?id=${id}" target="_blank">Ouvrir la facture</a>
-        |
-        <a href="<c:url value='/accueil'/>">Retour à l'accueil</a>
-    </p>
+    <div class="container">
+        <div class="card">
+            <div class="alert alert--danger">
+                JavaScript est désactivé. Utilisez les liens ci-dessous.
+            </div>
+            <div class="actions" style="justify-content:flex-start;">
+                <a class="btn btn--primary" href="<c:url value='/facture'/>?id=${id}" target="_blank">Ouvrir la facture</a>
+                <a class="btn" href="<c:url value='/accueil'/>">Retour à l’accueil</a>
+            </div>
+        </div>
+    </div>
 </noscript>
 
 </body>
