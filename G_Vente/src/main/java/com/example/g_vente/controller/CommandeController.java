@@ -29,11 +29,21 @@ public class CommandeController {
     public String submitCommande(@ModelAttribute("cmd") CommandeRequestDTO cmd, Model model) {
         try {
             var saved = venteService.creerCommande(cmd);
-            return "redirect:/facture?id=" + saved.getId();
+
+            // Go to success page that will open facture in new tab and return to accueil
+            return "redirect:/commande/success?id=" + saved.getId();
+
         } catch (RuntimeException ex) {
             model.addAttribute("produits", produitStockService.getAllProduitsStock());
             model.addAttribute("error", ex.getMessage());
             return "commande_form";
         }
     }
+
+    @GetMapping("/commande/success")
+    public String success(@RequestParam Long id, Model model) {
+        model.addAttribute("id", id);
+        return "commande_success";
+    }
+
 }

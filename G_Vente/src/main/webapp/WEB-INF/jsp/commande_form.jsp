@@ -8,6 +8,9 @@
 </c:if>
 
 <form method="post" action="/commande">
+
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
     <label>Code Commande:</label>
     <input type="number" name="codeCmd" required /><br/><br/>
 

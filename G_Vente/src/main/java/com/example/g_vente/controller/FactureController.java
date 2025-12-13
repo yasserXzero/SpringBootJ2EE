@@ -3,6 +3,7 @@ package com.example.g_vente.controller;
 import com.example.g_vente.repository.CommandeRepository;
 import com.example.g_vente.service.PdfService;
 import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

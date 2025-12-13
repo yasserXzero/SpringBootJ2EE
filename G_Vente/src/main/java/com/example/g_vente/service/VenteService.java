@@ -7,7 +7,10 @@ import com.example.g_vente.repository.CommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Date;
 
@@ -20,6 +23,7 @@ public class VenteService {
     @Autowired
     private CommandeRepository commandeRepository;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final String STOCK_SOUSTRAIRE_URL =
             "http://localhost:8082/stock/soustraire?codePdt={codePdt}&qteCmd={qteCmd}";
@@ -32,20 +36,20 @@ public class VenteService {
         Date now = new Date();
 
         // 1) Subtract stock (gestion_stock)
-        ResponseEntity<String> stockResp = restTemplate.exchange(
-                STOCK_SOUSTRAIRE_URL,
-                HttpMethod.POST,
-                null,
-                String.class,
-                req.getCodePdt(),
-                req.getQteCmd()
-        );
+        try {
+            restTemplate.postForEntity(
+                    STOCK_SOUSTRAIRE_URL,
+                    null,
+                    String.class,
+                    req.getCodePdt(),
+                    req.getQteCmd()
+            );
+        } catch (RestClientResponseException ex) {
 
-        if (!stockResp.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Stock error: cannot subtract quantity.");
+            throw new RuntimeException(extractApiMessage(ex.getResponseBodyAsString(), "Erreur stock"));
         }
 
-        // 2) Insert line into Tous_commandes (gestion_commercial)
+        // 2) Insert into commercial
         TousCommandeDTO dto = new TousCommandeDTO(
                 req.getCodeCmd(),
                 req.getClient(),
@@ -56,23 +60,27 @@ public class VenteService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<TousCommandeDTO> entity = new HttpEntity<>(dto, headers);
 
-        ResponseEntity<String> commResp = restTemplate.exchange(
-                COMMERCIAL_ADD_CMD_URL,
-                HttpMethod.POST,
-                entity,
-                String.class
-        );
-
-        if (!commResp.getStatusCode().is2xxSuccessful()) {
-
-            throw new RuntimeException("Commercial error: cannot insert Tous_commandes.");
+        try {
+            restTemplate.postForEntity(COMMERCIAL_ADD_CMD_URL, entity, String.class);
+        } catch (RestClientResponseException ex) {
+            throw new RuntimeException(extractApiMessage(ex.getResponseBodyAsString(), "Erreur commercial"));
         }
 
-        // 3) Save in gestion_vente database (commandes)
+        // 3) Save locally
         Commande cmd = new Commande(req.getCodeCmd(), req.getClient(), req.getCodePdt(), req.getQteCmd(), now);
         return commandeRepository.save(cmd);
+    }
+
+    private String extractApiMessage(String responseBody, String fallback) {
+        if (responseBody == null || responseBody.isBlank()) return fallback;
+        try {
+            JsonNode node = objectMapper.readTree(responseBody);
+            String msg = node.path("message").asText();
+            return (msg == null || msg.isBlank()) ? fallback : msg;
+        } catch (Exception e) {
+            return fallback;
+        }
     }
 }

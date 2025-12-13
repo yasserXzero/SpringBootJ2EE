@@ -19,14 +19,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // keep as-is for now to avoid breaking JSP POST forms
-                .authorizeHttpRequests(auth -> auth
+        http.authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/WEB-INF/**", "/jsp/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // IMPORTANT: session must be allowed
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

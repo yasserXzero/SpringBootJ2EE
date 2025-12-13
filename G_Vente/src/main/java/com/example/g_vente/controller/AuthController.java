@@ -41,7 +41,7 @@ public class AuthController {
             // No token in model anymore
             model.addAttribute("user", login);
 
-            return "accueil";
+            return "redirect:/accueil";
         }
 
         model.addAttribute("error", "Login ou mot de passe incorrect");
