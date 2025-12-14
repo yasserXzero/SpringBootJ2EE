@@ -17,8 +17,6 @@ public class Users {
     @Column(length = 100)
     private String pass;
 
-    //note i changed from 20 lengh to 100 to use crypting
-    //the pass word instade of normal password for the one i used its bCrypy hashes witch need 60 charachter
 
     public Users(Long codeUser, String login, String pass) {
         this.codeUser = codeUser;

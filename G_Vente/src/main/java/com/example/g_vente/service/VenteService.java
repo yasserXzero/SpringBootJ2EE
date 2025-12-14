@@ -37,26 +37,34 @@ public class VenteService {
 
         Date now = new Date();
 
-        // 1) Subtract stock (gestion_stock) FIRST
-        ResponseEntity<String> stockResp = restTemplate.exchange(
-                STOCK_SOUSTRAIRE_URL,
-                HttpMethod.POST,
-                null,
-                String.class,
-                req.getCodePdt(),
-                req.getQteCmd()
-        );
 
-        if (!stockResp.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Stock error: cannot subtract quantity.");
+        try {
+            restTemplate.exchange(
+                    STOCK_SOUSTRAIRE_URL,
+                    HttpMethod.POST,
+                    null,
+                    String.class,
+                    req.getCodePdt(),
+                    req.getQteCmd()
+            );
+        } catch (RestClientResponseException ex) {
+            String msg = extractApiMessage(
+                    ex.getResponseBodyAsString(),
+                    "Erreur lors de la soustraction du stock"
+            );
+            throw new RuntimeException(msg);
         }
 
-        // 2) Save in gestion_vente database (commandes) SECOND (generates codeCmd)
-        Commande cmd = new Commande(req.getClient(), req.getCodePdt(), req.getQteCmd(), now);
+
+        Commande cmd = new Commande(
+                req.getClient(),
+                req.getCodePdt(),
+                req.getQteCmd(),
+                now
+        );
         cmd = commandeRepository.save(cmd);
 
         if (cmd.getCodeCmd() == null) {
-
             cmd = commandeRepository.saveAndFlush(cmd);
         }
 
@@ -73,16 +81,19 @@ public class VenteService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<TousCommandeDTO> entity = new HttpEntity<>(dto, headers);
 
-        ResponseEntity<String> commResp = restTemplate.exchange(
-                COMMERCIAL_ADD_CMD_URL,
-                HttpMethod.POST,
-                entity,
-                String.class
-        );
-
-        if (!commResp.getStatusCode().is2xxSuccessful()) {
-
-            throw new RuntimeException("Commercial error: cannot insert Tous_commandes.");
+        try {
+            restTemplate.exchange(
+                    COMMERCIAL_ADD_CMD_URL,
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+        } catch (RestClientResponseException ex) {
+            String msg = extractApiMessage(
+                    ex.getResponseBodyAsString(),
+                    "Erreur lors de l’ajout de la commande commerciale"
+            );
+            throw new RuntimeException(msg);
         }
 
         return cmd;

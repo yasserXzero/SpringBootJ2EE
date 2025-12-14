@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                // CSRF enabled (as you already did)
+
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/auth/**").permitAll()
@@ -34,9 +34,9 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
-                // KEY PART: redirect unauthenticated users to /auth
+
                 .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
-                    // For browser pages -> redirect
+
                     response.sendRedirect(request.getContextPath() + "/auth");
                 }));
 

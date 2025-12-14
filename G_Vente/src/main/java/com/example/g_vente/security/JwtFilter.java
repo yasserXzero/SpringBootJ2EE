@@ -30,13 +30,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = null;
 
-        // 1) Authorization header (optional support)
+
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
         }
 
-        // 2) If not in header, read from session
+
         if (token == null) {
             HttpSession session = request.getSession(false);
             if (session != null) {
