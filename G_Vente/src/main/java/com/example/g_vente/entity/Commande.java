@@ -8,8 +8,6 @@ import java.util.Date;
 public class Commande {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "code_cmd")
     private Long codeCmd;
 
@@ -26,9 +24,8 @@ public class Commande {
     @Column(name = "date_cmd")
     private Date dateCmd;
 
-    public Commande(Long id, Long codeCmd, String client, Long codePdt, Long qteCmd, Date dateCmd) {
-        this.id = id;
-        this.codeCmd = codeCmd;
+    public Commande( String client, Long codePdt, Long qteCmd, Date dateCmd) {
+
         this.client = client;
         this.codePdt = codePdt;
         this.qteCmd = qteCmd;
@@ -46,13 +43,7 @@ public class Commande {
     public Commande() {
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getCodeCmd() {
         return codeCmd;

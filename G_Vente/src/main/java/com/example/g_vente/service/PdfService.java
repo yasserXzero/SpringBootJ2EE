@@ -48,7 +48,7 @@ public class PdfService {
             factureTitle.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureTitle);
 
-            Paragraph factureNo = new Paragraph("N°: " + cmd.getId(), hFont);
+            Paragraph factureNo = new Paragraph("N°: " + cmd.getCodeCmd(), hFont);
             factureNo.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureNo);
 
@@ -115,7 +115,7 @@ public class PdfService {
             thanks.setAlignment(Element.ALIGN_CENTER);
             document.add(thanks);
 
-            Paragraph gen = new Paragraph("Document généré utilisant open PDF   .", smallFont);
+            Paragraph gen = new Paragraph("", smallFont);
             gen.setAlignment(Element.ALIGN_CENTER);
             document.add(gen);
 
