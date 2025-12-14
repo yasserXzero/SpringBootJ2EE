@@ -43,10 +43,6 @@
             <!-- CSRF -->
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
-            <div class="field">
-                <label for="codeCmd">Code Commande</label>
-                <input class="input" id="codeCmd" type="number" name="codeCmd" required />
-            </div>
 
             <div class="field">
                 <label for="client">Client</label>

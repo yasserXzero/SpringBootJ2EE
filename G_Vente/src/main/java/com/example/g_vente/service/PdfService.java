@@ -48,7 +48,7 @@ public class PdfService {
             factureTitle.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureTitle);
 
-            Paragraph factureNo = new Paragraph("N°: " + cmd.getId(), hFont);
+            Paragraph factureNo = new Paragraph("N°: " + cmd.getCodeCmd(), hFont);
             factureNo.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureNo);
 
