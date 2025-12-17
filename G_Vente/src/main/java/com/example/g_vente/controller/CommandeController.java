@@ -30,7 +30,7 @@ public class CommandeController {
         try {
             var saved = venteService.creerCommande(cmd);
 
-            // Go to success page that will open facture in new tab and return to accueil
+
             return "redirect:/commande/success?id=" + saved.getCodeCmd();
 
         } catch (RuntimeException ex) {

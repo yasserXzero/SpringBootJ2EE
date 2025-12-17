@@ -44,7 +44,7 @@ public class PdfService {
 
             PdfPCell factureCell = new PdfPCell();
             factureCell.setBorder(Rectangle.NO_BORDER);
-            Paragraph factureTitle = new Paragraph("ASUSTECH", titleFont);
+            Paragraph factureTitle = new Paragraph("Facture of ASUSTECH", titleFont);
             factureTitle.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureTitle);
 
@@ -111,7 +111,7 @@ public class PdfService {
             // ===== FOOTER =====
             document.add(new Paragraph(" "));
             document.add(new LineSeparator());
-            Paragraph thanks = new Paragraph("Created by Yasser kharroub", smallFont);
+            Paragraph thanks = new Paragraph("Created by Yasser kha rroub", smallFont);
             thanks.setAlignment(Element.ALIGN_CENTER);
             document.add(thanks);
 

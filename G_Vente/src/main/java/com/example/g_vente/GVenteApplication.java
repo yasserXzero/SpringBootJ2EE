@@ -12,7 +12,7 @@ public class GVenteApplication {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println(encoder.encode("admin"));
-        //i did this bax ndakhalo f data base mcrypti o biba
+        //i did this bax ndakhalo f data base mcrypti
 
 
     }

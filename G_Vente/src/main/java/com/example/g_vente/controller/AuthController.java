@@ -38,7 +38,7 @@ public class AuthController {
             session.setAttribute("JWT", token);
             session.setAttribute("USER", login);
 
-            // No token in model anymore
+
             model.addAttribute("user", login);
 
             return "redirect:/accueil";
