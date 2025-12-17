@@ -37,14 +37,14 @@ public class PdfService {
 
             PdfPCell companyCell = new PdfPCell();
             companyCell.setBorder(Rectangle.NO_BORDER);
-            companyCell.addElement(new Paragraph("G_Vente", hFont));
+            companyCell.addElement(new Paragraph("ASUSTECH", hFont));
             companyCell.addElement(new Paragraph("Adresse: Tanger, Maroc", txtFont));
-            companyCell.addElement(new Paragraph("Tél: +212 6xx xx xx xx", txtFont));
+            companyCell.addElement(new Paragraph("Tél: +212 600000000", txtFont));
             companyCell.addElement(new Paragraph("Email: Yasser_kharroub@Emsi-edu.ma", txtFont));
 
             PdfPCell factureCell = new PdfPCell();
             factureCell.setBorder(Rectangle.NO_BORDER);
-            Paragraph factureTitle = new Paragraph("FACTURE", titleFont);
+            Paragraph factureTitle = new Paragraph("ASUSTECH", titleFont);
             factureTitle.setAlignment(Element.ALIGN_RIGHT);
             factureCell.addElement(factureTitle);
 
@@ -111,7 +111,7 @@ public class PdfService {
             // ===== FOOTER =====
             document.add(new Paragraph(" "));
             document.add(new LineSeparator());
-            Paragraph thanks = new Paragraph("Merci pour votre confiance.", smallFont);
+            Paragraph thanks = new Paragraph("Created by Yasser kharroub", smallFont);
             thanks.setAlignment(Element.ALIGN_CENTER);
             document.add(thanks);
 
